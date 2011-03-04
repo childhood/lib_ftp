@@ -1,0 +1,87 @@
+
+lib_ftp 0.0.2
+
+    -> developed using libCurl.
+    -> main actions: upload/download/delete files and explore ftp space.
+
+
+  TODO:
+    - change the "explore funcion" -> get more info and change reading process (use CURLOPT_QUOTE?)
+    - add "saving directory" selection
+
+
+************************************************
+** HOW TO USE IT - EXAMPLE - see test/test1.c **
+************************************************
+
+#include "lib_ftp.h"
+
+int main ()
+{
+  int ret;
+
+  /* Allocate app's struct */
+  ftp_s *ftp;
+  ftp = malloc (1 * sizeof (ftp_s));
+
+  /* Define settings */
+  ftp->server           = "server"; /* es: "oneandy.altervista.org" */
+  ftp->username         = "username";
+  ftp->password         = "password";
+  ftp->path_file_upload = "data.txt";
+  ftp->name_file_upload = "data_uploaded.txt";
+  ftp->use_proxy        = 0;
+  ftp->proxy            = NULL;
+  ftp->proxy_port       = NULL;
+
+  printf ("* explore server...\n");
+
+  /*
+    EXPLORE SERVER saving the content in "data.txt"
+    No iterative protocol - It doesn't explore the sub-directories
+  */
+  ret = ftp_explore (ftp, "data.txt");
+
+  printf ("* start backup...\n");
+
+  /*
+    BACKUP FILE
+    You can download the file save it with another name.
+    No iterative prototocol - One file at the time
+  */
+  ret = ftp_backup (ftp, "file.pdf", "saved_file.pdf");
+
+  printf ("* start upload...\n");
+
+  /*
+    UPLOAD FILE
+    No iterative prototocol - One file at the time
+  */
+  /*
+  ret = ftp_upload (ftp);
+  */
+  /* or */
+  ret = ftp_upload_set_files (ftp, "data.txt", "uploaded_data.txt");
+
+
+  /*
+    DELETE FILE
+    No iterative prototocol - One file at the time
+  */
+  ret = ftp_delete (ftp, "uploaded_data.txt");
+
+
+  return 0;
+}
+
+
+
+
+ChangeLog
+@0.0.2 (04/03/2011)
+- Proxy protocol supported
+
+@0.0.1 (23/02/2011)
+- First version
+
+
